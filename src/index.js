@@ -3,8 +3,21 @@ import ReactDOM from "react-dom";
 
 import "./styles.css";
 
-const Todo = ({ todo }) => {
-  return <p className="todo">{todo.text}</p>;
+const Todo = ({ todo, index, completeTodo }) => {
+  return (
+    <div
+      style={{ textDecoration: todo.completed ? "line-through" : "" }}
+      className="todo"
+      index={index}
+    >
+      {todo.text}
+      <div>
+        <button className="btn" onClick={() => completeTodo(index)}>
+          Complete
+        </button>
+      </div>
+    </div>
+  );
 };
 
 const TodoForm = ({ addTodo }) => {
@@ -24,6 +37,7 @@ const TodoForm = ({ addTodo }) => {
         type="text"
         name="text"
         value={value}
+        placeholder="Add Todo"
         onChange={e => setValue(e.target.value)}
       />
     </form>
@@ -33,13 +47,16 @@ const TodoForm = ({ addTodo }) => {
 const App = () => {
   const [todos, setTodo] = useState([
     {
-      text: "Fedding my dogs"
+      text: "Fedding my dogs",
+      completed: false
     },
     {
-      text: "Going to a grocery store"
+      text: "Going to a grocery store",
+      completed: false
     },
     {
-      text: "Buying snacks"
+      text: "Buying snacks",
+      completed: false
     }
   ]);
 
@@ -48,13 +65,26 @@ const App = () => {
     setTodo(newTodo);
   };
 
+  const completeTodo = index => {
+    const newTodo = [...todos];
+    if (!todos[index].completed) {
+      todos[index].completed = true;
+    } else {
+      todos[index].completed = false;
+    }
+    setTodo(newTodo);
+  };
+
   return (
-    <div>
-      <h1>Hello World!</h1>
-      <p>This is about Hook</p>
+    <div className="todolist">
       <TodoForm addTodo={addTodo} />
-      {todos.map((todo, i) => (
-        <Todo key={i} todo={todo} />
+      {todos.map((todo, index) => (
+        <Todo
+          key={index}
+          todo={todo}
+          index={index}
+          completeTodo={completeTodo}
+        />
       ))}
     </div>
   );
